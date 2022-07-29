@@ -1,4 +1,4 @@
-# Graphosaurus
+# Fork of Graphosaurus
 
 [![Build Status](https://travis-ci.org/frewsxcv/graphosaurus.svg)](https://travis-ci.org/frewsxcv/graphosaurus)
 [![npm version](https://badge.fury.io/js/graphosaurus.svg)](http://badge.fury.io/js/graphosaurus)
@@ -9,6 +9,14 @@ A three-dimensional static graph viewer.
 
 *(click the image to try it out)*
 
+## Run the Cluster Visualization
+1. Git Clone this repo 
+1. Install [node](http://nodejs.org/) and [npm](https://www.npmjs.org/)
+1. In repo run `npm install` to install all the build requirements for the repo
+1. Run `npm start` to kick off local Node+Express server
+1. Go to `http://127.0.0.1:3000/cluster_viz`
+
+# Other Graphosaurus Info
 ## Demos
 
 * [EVE Online map](https://frewsxcv.github.io/graphosaurus/examples/eve-universe/index.html)
