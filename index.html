@@ -1,0 +1,30 @@
+<html>
+  <head>
+    <title>Cluster Visualization</title>
+    <meta id="darwinJSON" name="darwinJSON" content='{{darwinJSON}}' />
+    <style>
+    #graph {
+      width: 95%;
+      height: 95%;
+      border: 1px solid grey;
+    }
+    </style>
+  </head>
+  <body>
+    <div id="graph"></div>
+
+    <script src="dist/graphosaurus.min.js"></script>
+    <script src="cluster_graph.js"></script>
+    <script>
+
+      const darwinJSON = document.getElementById('darwinJSON').getAttribute('content');
+
+      var graph = G.graph();
+
+      build_cluster_graph(graph, darwinJSON);
+      
+      graph.renderIn("graph");
+
+    </script>
+  </body>
+</html>
