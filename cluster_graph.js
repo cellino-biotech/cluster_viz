@@ -1,7 +1,7 @@
 // @author Jason Natale
 
-const zMult = 15;
-const slopeThresh = 0.6;
+const zMult = -15;
+const slopeThresh = -0.6;
 
 
 /**
@@ -33,8 +33,8 @@ function build_cluster_graph(graph, darwinJSON) {
       let x = cluster['artifacts'][frame_idx.toString()][0];
       let y = cluster['artifacts'][frame_idx.toString()][1];
       let z = frame_idx * zMult;
-      //var greenNode = G.node([1, 1, 1], {color: "green"}).addTo(graph);
-      var node = G.node([x, y, z], {color: "green"}).addTo(graph);
+      let color = "green";
+      var node = G.node([x, y, z], {color: color}).addTo(graph);
       data[clusterId]['nodes'].push(node);
       // add an intra-cluster edge if relevant
       var numArtifacts = data[clusterId]['nodes'].length;
@@ -83,17 +83,17 @@ function draw_edge(srcClusterId, srcNode, dstClusterId, dstNode) {
     clusters = [srcClusterId, dstClusterId];
   }
 
-  // get slope, and if below slopeThresh make it red and emit warning
+  // get slope, and if it's greater than slopeThresh make it red and emit warning
   let xdiff = srcNode['_pos']['x'] - dstNode['_pos']['x'];
   let ydiff = srcNode['_pos']['y'] - dstNode['_pos']['y'];
   let denom = Math.sqrt(Math.pow(xdiff, 2) + Math.pow(ydiff, 2));
   let zdiff = dstNode['_pos']['z'] - srcNode['_pos']['z'];
-  // zdiff should be positive, as the z values should be ascending 
-  if (zdiff < 0) {
-    console.log('negative frameNum diff of '+(zdiff/zMult)+' at cluster(s) '+clusters);
+  // zdiff should be negative, as the z values should be descending 
+  if (zdiff > 0) {
+    console.log('out of order lineage over span of '+(zdiff/zMult)+' frames at cluster(s) '+clusters);
   }
   let slope = zdiff / denom;
-  if (slope < slopeThresh) {
+  if (slope > slopeThresh) {
     let dstFrameNum = (dstNode['_pos']['z'] / zMult) + 1;
     let srcFrameNum = (srcNode['_pos']['z'] / zMult) + 1;
     

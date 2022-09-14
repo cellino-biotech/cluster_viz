@@ -4,7 +4,7 @@ var port = 3000;
 var express = require("express");
 
 // node start command will include param specifying path to darwin json
-const darwinPath = './CELL-001402_F8_resolution_0_63598f4c-b681-11ec-abce-42010a80001d_output4.json';
+const darwinPath = './CELL-001402_F8_resolution_0_63598f4c-b681-11ec-abce-42010a80001d_output6.json';
 let darwinJSON;
 let index;
 try {
