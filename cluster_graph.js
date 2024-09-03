@@ -10,6 +10,9 @@ const slopeThresh = -0.6;
 function build_cluster_graph(graph, darwinJSON) {
   // Read Darwin JSON data
   var data = JSON.parse(darwinJSON);
+  var num_nodes = 0;
+  var num_correct_edges = 0;
+  var num_bad_edges = 0;
 
   // Create a black origin node with cartesian coordinates x=0, y=0, z=0
   var originNode = G.node([0, 0, 0], {color: "black"});
@@ -35,6 +38,7 @@ function build_cluster_graph(graph, darwinJSON) {
       let z = frame_idx * zMult;
       let color = "green";
       var node = G.node([x, y, z], {color: color}).addTo(graph);
+      num_nodes = num_nodes + 1;
       data[clusterId]['nodes'].push(node);
       // add an intra-cluster edge if relevant
       var numArtifacts = data[clusterId]['nodes'].length;
@@ -42,7 +46,12 @@ function build_cluster_graph(graph, darwinJSON) {
         for (var i = 1; i < numArtifacts; i++) {
 	  var srcNode = data[clusterId]['nodes'][i-1];
 	  var dstNode = data[clusterId]['nodes'][i];
-	  draw_edge(clusterId, srcNode, clusterId, dstNode);
+	  is_good = draw_edge(clusterId, srcNode, clusterId, dstNode);
+	  if (is_good) {
+	    num_correct_edges += 1;
+	  } else {
+	    num_bad_edges += 1;
+	  }
 	}
       }
     }
@@ -66,15 +75,25 @@ function build_cluster_graph(graph, darwinJSON) {
 	continue;
       }
       var dstNode = data[clusterId]['nodes'][0];
-      draw_edge(srcClusterId, srcNode, clusterId, dstNode);
+      is_good = draw_edge(srcClusterId, srcNode, clusterId, dstNode);
+      if (is_good) {
+        num_correct_edges += 1;
+      } else {
+        num_bad_edges += 1;
+      }
     }
   }
+  console.log(num_nodes);
+  console.log(num_correct_edges);
+  console.log(num_bad_edges);
 }
 
 
 /*
  * Draw Edge color based on slope, and alert if slope below threshold,
  * because that indicates an issue with our annotation (or prediction in future)
+ *
+ * returns: True if edge was good (blue) or False if edge is bad (red)
  */
 function draw_edge(srcClusterId, srcNode, dstClusterId, dstNode) {
   // clusters info
@@ -101,8 +120,10 @@ function draw_edge(srcClusterId, srcNode, dstClusterId, dstNode) {
     console.log("low slope in cluster(s) "+clusters+" between frames "+
 	      srcFrameNum+" and "+dstFrameNum);
     var edge = G.edge([srcNode, dstNode], {color: 'red'}).addTo(graph);
+    return false;
   } else {
     var edge = G.edge([srcNode, dstNode], {color: 'blue'}).addTo(graph);
+    return true;
   }
 }
 
